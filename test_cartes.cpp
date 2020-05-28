@@ -2,7 +2,7 @@
 #include <iostream>
 #include "cartes.hpp"
 
-int main()
+int main2()
 {
     std::cout << "Dos de la carte : " << cartes::dos << std::endl << std::endl;
 

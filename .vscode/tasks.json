@@ -20,7 +20,7 @@
         },
         "problemMatcher": {
             "base": "$gcc",
-            "fileLocation": "absolute"
+            "fileLocation":"absolute"
         },
         "group": {
           "kind": "build",

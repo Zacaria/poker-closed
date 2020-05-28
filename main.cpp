@@ -1,5 +1,7 @@
 #include <iostream>
 #include "croupier.hpp"
+#include "joueur.hpp"
+#include "add.hpp"
 
 int JETONS_DEPART = 1000;
 int POT_DEPART = 2; // entre 1 et 3 généralement
@@ -12,6 +14,16 @@ int main()
     std::cout << "========= Bienvenue ! Asseyez vous. Nous jouerons selon les règles du poker fermé :) ==========" << std::endl;
 
     /*************** Initialisation ***************/
+
+    std::string bo = "bobby";
+
+    //std::cout << "add(1, 2) = " << add(1, 2) << '\n';
+    Joueurs joueurs = initJoueurs(bo);
+    for (Joueur *joueur : joueurs)
+    {
+        joueur->salutations();
+    }
+    
 
     // Initialiser les 7 IA
     // Initialiser le joueur
