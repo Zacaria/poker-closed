@@ -15,7 +15,7 @@ int main()
     /*************** Initialisation ***************/
 
     std::string nomJoueur = croupier::demanderNomJoueur();
-    Joueurs joueurs = initJoueurs(nomJoueur, JOUEURS_IA);
+    Joueurs joueurs = initJoueurs(nomJoueur, JOUEURS_IA, JETONS_DEPART);
     
     // Plateau
     int bouton = joueurs[0]->id; // on donne le bouton au premier joueur

@@ -9,6 +9,7 @@ struct Joueur
 {
     int id;
     std::string nom;
+    int jetons;
     Main main;
     void salutations() {
         std::cout << "Hey ! moi c'est " << nom << " : " << id << std::endl;
@@ -17,6 +18,6 @@ struct Joueur
 
 typedef std::vector<Joueur *> Joueurs;
 
-Joueurs initJoueurs(std::string nomJoueur, int nombreIA);
+Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart);
 
 #endif

@@ -3,10 +3,10 @@
 #include "joueur.hpp"
 
 std::array<std::string, 8> noms = {
-    "Kader", "Anissa", "Laila", "Rayan", "Michel", "Nicolas", "Foued", "Marie"
+    "Yahya", "Anissa", "Laila", "Rayan", "Michel", "Nicolas", "Foued", "Marie"
 };
 
-Joueurs initJoueurs(std::string nomJoueur, int nombreIA) {
+Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart) {
     Joueurs joueurs;
     for (int i = 0; i < nombreIA; i++)
     {
@@ -15,6 +15,7 @@ Joueurs initJoueurs(std::string nomJoueur, int nombreIA) {
         Joueur *joueurIA = new Joueur {
             .id = i,
             .nom = nomJoueur,
+            .jetons = jetonsDepart,
         };
         joueurIA->main.reserve(5);
         joueurs.push_back(joueurIA);
@@ -25,9 +26,9 @@ Joueurs initJoueurs(std::string nomJoueur, int nombreIA) {
     Joueur *joueurReel = new Joueur {
         .id = nombreIA,
         .nom = nomJoueur,
+        .jetons = jetonsDepart,
     };
     joueurReel->main.reserve(5);
-
     joueurs.push_back(joueurReel);
 
     // shuffle les joueurs
