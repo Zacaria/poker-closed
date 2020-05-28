@@ -2,6 +2,7 @@
 #define _CARTES_HPP_
 #include <array>
 #include <string>
+#include <vector>
 
 namespace cartes
 {
@@ -54,4 +55,16 @@ namespace cartes
         u8"\033[30m\033[47m🃛\33[0mJC", u8"\033[30m\033[47m🃝\33[0mQC",
         u8"\033[30m\033[47m🃞\33[0mKC"};
 } // namespace cartes
+
+struct Carte {
+    int valeur;
+    char couleur;
+    std::string icone;
+};
+
+typedef std::vector<Carte *> Main;
+typedef std::vector<Carte *> Paquet;
+
+Paquet initPaquet();
+
 #endif

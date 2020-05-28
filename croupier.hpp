@@ -44,6 +44,9 @@ namespace croupier
        `hmd`        ods `dmmmmmmmmmmmmmmmmNo   /-  `s  `h/hmmmmmmmmmmmmmmmh  `ds       yhdmd.       
       `yyyo         .mh`+mmmmmmmmmmmmmmmmmNm-  +-  `s  ssommmmmmmmmmmmmmmmm/ /N:       +y-dNh.  
       )";
+
+      std::string demanderNomJoueur();
+      void dire(std::string texte);
 }
 
 #endif
