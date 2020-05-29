@@ -5,7 +5,7 @@
 #include "utils.hpp"
 
 std::array<std::string, 8> noms = {
-    "Yahya", "Anissa", "Laila", "Rayan", "Michel", "Nicolas", "Foued", "Marie"};
+    "Yahya", "Anna", "Laila", "Idir", "Hamadi", "Gael", "Foued", "Marie"};
 
 Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart)
 {

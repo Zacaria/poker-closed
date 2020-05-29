@@ -2,15 +2,17 @@
 #include "croupier.hpp"
 #include "joueur.hpp"
 #include "utils.hpp"
+#include "jeu.hpp"
 
 int JETONS_DEPART = 1000;
 int POT_DEPART = 2; // entre 1 et 3 généralement
-int JOUEURS_IA = 8;
+int JOUEURS_IA = 7;
 
 bool DEBUG_MODE = true;
 
 int main()
 {
+    croupier::dire(croupier::welcome);
     croupier::dire("========= Bienvenue ! Asseyez vous. Nous jouerons selon les règles du poker fermé :) ==========");
 
     /*************** Initialisation ***************/
@@ -18,11 +20,8 @@ int main()
     std::string nomJoueur = croupier::demanderNomJoueur();
     Joueurs joueurs = initJoueurs(nomJoueur, JOUEURS_IA, JETONS_DEPART);
 
-    // Plateau
-    int bouton = joueurs[0]->id; // on donne le bouton au premier joueur
+    int bouton = joueurs[0]->id; // on donne le bouton au premier joueur // pas besoin parce que c'est ordonné, on a juste besoin du numéro du tour
     croupier::dire("Le bouton est à " + joueurs[0]->nom);
-
-    // Mode debug pour print l'état des cartes
 
     Paquet paquetCartes = initPaquet();
     if (DEBUG_MODE == true)
@@ -38,15 +37,7 @@ int main()
     }
 
     /*************** Jeu ***************/
-
-    // Faire avancer le bouton
-    // Pot de départ
-    // Distribuer des cartes
-    // Regarder les cartes
-    // (AnteEnchere) Faire parler tous le joueurs jusqu'à alignement
-    // Echanger (tirer du paquet, et mettre dans la défausse)
-    // Enchere
-    // Resolution
+    jouer(&paquetCartes,&joueurs);
 
     /*************** Fin, Nettoyage ***************/
 

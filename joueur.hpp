@@ -12,7 +12,7 @@ struct Joueur
     int jetons;
     Main main;
     void salutations() {
-        std::cout << "Hey ! moi c'est " << nom << " : " << id << std::endl;
+        std::cout << "Hey ! moi c'est " << nom << ", mon id : " << id << std::endl;
     };
 };
 
