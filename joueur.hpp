@@ -11,9 +11,20 @@ struct Joueur
     std::string nom;
     int jetons;
     Main main;
-    void salutations() {
+    void salutations()
+    {
         std::cout << "Hey ! moi c'est " << nom << ", mon id : " << id << std::endl;
     };
+    void montrerMain()
+    {
+        std::cout << "Je suis " << nom << " id : " << id << " ";
+        for (auto carte : main)
+        {
+            carte->afficher();
+            std::cout << " ";
+        }
+        std::cout << std::endl;
+    }
 };
 
 typedef std::vector<Joueur *> Joueurs;
