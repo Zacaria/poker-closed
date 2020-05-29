@@ -1,18 +1,20 @@
 #include <string>
 #include <array>
+#include <random>
 #include "joueur.hpp"
+#include "utils.hpp"
 
 std::array<std::string, 8> noms = {
-    "Yahya", "Anissa", "Laila", "Rayan", "Michel", "Nicolas", "Foued", "Marie"
-};
+    "Yahya", "Anissa", "Laila", "Rayan", "Michel", "Nicolas", "Foued", "Marie"};
 
-Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart) {
+Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart)
+{
     Joueurs joueurs;
     for (int i = 0; i < nombreIA; i++)
     {
-        std::string nomJoueur = noms[i%sizeof(noms)] + "_"; // modulo pour être sur de ne jamais sortir du tableau
-        nomJoueur += i +'O'; // on ajoute un caractère la fin du prénom pour que le nom soit unique
-        Joueur *joueurIA = new Joueur {
+        std::string nomJoueur = noms[i % noms.size()] + "_"; // modulo pour être sur de ne jamais sortir du tableau
+        nomJoueur += i + 'O';                                 // on ajoute un caractère la fin du prénom pour que le nom soit unique
+        Joueur *joueurIA = new Joueur{
             .id = i,
             .nom = nomJoueur,
             .jetons = jetonsDepart,
@@ -23,7 +25,7 @@ Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart) {
         joueurIA->salutations();
     }
 
-    Joueur *joueurReel = new Joueur {
+    Joueur *joueurReel = new Joueur{
         .id = nombreIA,
         .nom = nomJoueur,
         .jetons = jetonsDepart,
@@ -31,7 +33,21 @@ Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart) {
     joueurReel->main.reserve(5);
     joueurs.push_back(joueurReel);
 
-    // shuffle les joueurs
+    shuffle(joueurs.begin(), joueurs.end(), std::default_random_engine(getRandomSeed()));
 
     return joueurs;
+}
+
+void clearJoueurs(Joueurs *joueurs)
+{
+    for (auto joueur : *joueurs)
+    {
+        for (auto carte : joueur->main)
+        {
+            delete carte;
+        }
+
+        delete joueur;
+    }
+    clearVector(joueurs);
 }

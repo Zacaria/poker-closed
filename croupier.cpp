@@ -26,7 +26,7 @@ namespace croupier
             }
         }
 
-        dire(nomJoueur + " je suis enchanté, c'est parti !");
+        dire("Enchanté "+ nomJoueur + ", commencons !");
 
         return nomJoueur;
     }

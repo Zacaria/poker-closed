@@ -19,5 +19,6 @@ struct Joueur
 typedef std::vector<Joueur *> Joueurs;
 
 Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart);
+void clearJoueurs(Joueurs *joueurs);
 
 #endif

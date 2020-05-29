@@ -1,6 +1,7 @@
 #ifndef _CARTES_HPP_
 #define _CARTES_HPP_
 #include <array>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -58,13 +59,19 @@ namespace cartes
 
 struct Carte {
     int valeur;
-    char couleur;
+    std::string couleur;
     std::string icone;
+    void afficher() {
+        std::cout << icone;
+    };
 };
 
 typedef std::vector<Carte *> Main;
 typedef std::vector<Carte *> Paquet;
 
 Paquet initPaquet();
+void melanger(Paquet *paquet);
+void afficher(Paquet *paquet);
+void clearPaquet(Paquet *paquet);
 
 #endif
