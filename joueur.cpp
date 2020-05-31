@@ -18,6 +18,7 @@ Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart)
             .id = i,
             .nom = nomJoueur,
             .jetons = jetonsDepart,
+            .isIA = true,
         };
         joueurIA->main.reserve(5);
         joueurs.push_back(joueurIA);
@@ -29,6 +30,7 @@ Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart)
         .id = nombreIA,
         .nom = nomJoueur,
         .jetons = jetonsDepart,
+        .isIA = false,
     };
     joueurReel->main.reserve(5);
     joueurs.push_back(joueurReel);

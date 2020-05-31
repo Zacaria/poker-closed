@@ -5,10 +5,9 @@
 #include "jeu.hpp"
 
 int JETONS_DEPART = 1000;
-int POT_DEPART = 2; // entre 1 et 3 généralement
 int JOUEURS_IA = 7;
 
-bool DEBUG_MODE = true;
+bool DEBUG_MODE = false;
 
 int main()
 {
@@ -37,7 +36,7 @@ int main()
     }
 
     /*************** Jeu ***************/
-    jouer(&paquetCartes,&joueurs);
+    jouer(&paquetCartes,&joueurs, DEBUG_MODE);
 
     /*************** Fin, Nettoyage ***************/
 

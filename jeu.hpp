@@ -5,8 +5,14 @@
 // paquet de carte
 // joueurs
 
-void jouer(Paquet *cartes, Joueurs *joueurs);
+void jouer(Paquet *cartes, Joueurs *joueurs, bool debug);
 
-
+enum action
+{
+    coucher,
+    suivre,
+    relancer,
+    tapis,
+};
 
 #endif
