@@ -2,17 +2,24 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include "constants.hpp"
 namespace croupier
 {
     void dire(std::string texte)
     {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        if (constants::DEBUG_MODE == false) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
         std::cout << texte << std::endl;
     }
 
     std::string demanderNomJoueur()
     {
         dire("Je m'appelle Croupy, et vous comment vous appelez vous ?");
+
+        if (constants::DEBUG_MODE == true) {
+            return "Test";
+        }
 
         std::string nomJoueur = "";
 
@@ -30,4 +37,4 @@ namespace croupier
 
         return nomJoueur;
     }
-} // namespace croupier
+}

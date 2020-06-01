@@ -3,11 +3,7 @@
 #include "joueur.hpp"
 #include "utils.hpp"
 #include "jeu.hpp"
-
-int JETONS_DEPART = 1000;
-int JOUEURS_IA = 7;
-
-bool DEBUG_MODE = false;
+#include "constants.hpp"
 
 int main()
 {
@@ -17,26 +13,26 @@ int main()
     /*************** Initialisation ***************/
 
     std::string nomJoueur = croupier::demanderNomJoueur();
-    Joueurs joueurs = initJoueurs(nomJoueur, JOUEURS_IA, JETONS_DEPART);
+    Joueurs joueurs = initJoueurs(nomJoueur);
 
     int bouton = joueurs[0]->id; // on donne le bouton au premier joueur // pas besoin parce que c'est ordonné, on a juste besoin du numéro du tour
     croupier::dire("Le bouton est à " + joueurs[0]->nom);
 
     Paquet paquetCartes = initPaquet();
-    if (DEBUG_MODE == true)
+    if (constants::DEBUG_MODE == true)
     {
         afficher(&paquetCartes);
     }
 
     melanger(&paquetCartes);
     croupier::dire("Le paquet de cartes est tout neuf ! Laissez moi le mélanger");
-    if (DEBUG_MODE == true)
+    if (constants::DEBUG_MODE == true)
     {
         afficher(&paquetCartes);
     }
 
     /*************** Jeu ***************/
-    jouer(&paquetCartes,&joueurs, DEBUG_MODE);
+    jouer(&paquetCartes,&joueurs);
 
     /*************** Fin, Nettoyage ***************/
 

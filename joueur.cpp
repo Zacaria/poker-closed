@@ -3,21 +3,22 @@
 #include <random>
 #include "joueur.hpp"
 #include "utils.hpp"
+#include "constants.hpp"
 
 std::array<std::string, 8> noms = {
     "Yahya", "Anna", "Laila", "Idir", "Hamadi", "Gael", "Foued", "Marie"};
 
-Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart)
+Joueurs initJoueurs(std::string nomJoueur)
 {
     Joueurs joueurs;
-    for (int i = 0; i < nombreIA; i++)
+    for (int i = 0; i < constants::JOUEURS_IA; i++)
     {
         std::string nomJoueur = noms[i % noms.size()] + "_"; // modulo pour être sur de ne jamais sortir du tableau
         nomJoueur += i + 'O';                                 // on ajoute un caractère la fin du prénom pour que le nom soit unique
         Joueur *joueurIA = new Joueur{
             .id = i,
             .nom = nomJoueur,
-            .jetons = jetonsDepart,
+            .jetons = constants::JETONS_DEPART,
             .isIA = true,
         };
         joueurIA->main.reserve(5);
@@ -27,9 +28,9 @@ Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart)
     }
 
     Joueur *joueurReel = new Joueur{
-        .id = nombreIA,
+        .id = constants::JOUEURS_IA,
         .nom = nomJoueur,
-        .jetons = jetonsDepart,
+        .jetons = constants::JETONS_DEPART,
         .isIA = false,
     };
     joueurReel->main.reserve(5);
@@ -44,11 +45,6 @@ void clearJoueurs(Joueurs *joueurs)
 {
     for (auto joueur : *joueurs)
     {
-        for (auto carte : joueur->main)
-        {
-            delete carte;
-        }
-
         delete joueur;
     }
     clearVector(joueurs);

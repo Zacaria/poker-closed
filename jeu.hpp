@@ -2,17 +2,15 @@
 #define _JEU_HPP_
 #include "cartes.hpp"
 #include "joueur.hpp"
-// paquet de carte
-// joueurs
 
-void jouer(Paquet *cartes, Joueurs *joueurs, bool debug);
+void jouer(Paquet *cartes, Joueurs *joueurs);
 
-enum action
+struct TourJeu
 {
-    coucher,
-    suivre,
-    relancer,
-    tapis,
+    Joueurs joueurs;
+    int mises;
+    int miseIndiv;
+    bool ouvert;
 };
 
 #endif

@@ -5,7 +5,7 @@
 #include <vector>
 #include "cartes.hpp"
 #include "croupier.hpp"
-#include "jeu.hpp"
+#include "action.hpp"
 
 struct Joueur
 {
@@ -17,7 +17,7 @@ struct Joueur
     void salutations()
     {
         std::cout << "Hey ! moi c'est " << nom << ", mon id : " << id << std::endl;
-    };
+    }
     void montrerMain()
     {
         std::cout << "Je suis " << nom << " id : " << id << " ";
@@ -30,7 +30,9 @@ struct Joueur
     }
     bool miser(int nbJetons)
     {
-        if(nbJetons > jetons) {
+        if (nbJetons > jetons)
+        {
+            jetons = 0;
             return false;
         }
         jetons -= nbJetons;
@@ -51,7 +53,6 @@ struct Joueur
         while (reponse != "Yes" && reponse != "No")
         {
             std::getline(std::cin, reponse);
-            std::cout << "reponse est: " << reponse << std::endl;
             if (reponse != "Yes" && reponse != "No")
             {
                 croupier::dire("Les réponses possibles sont Yes ou No :)");
@@ -66,13 +67,12 @@ struct Joueur
         {
             return action::suivre; // action par défaut à changer quand on mettra de l'intelligence
         }
-        croupier::dire("Que voulez-vous faire ? (suivre/coucher/relancer/tapis)");
         std::string reponse = "";
 
         while (reponse != "suivre" && reponse != "coucher" && reponse != "relancer" && reponse != "tapis")
         {
+            croupier::dire("Que voulez-vous faire ? (suivre/coucher/relancer/tapis)");
             std::getline(std::cin, reponse);
-            std::cout << "reponse est: " << reponse << std::endl;
             if (reponse != "suivre" && reponse != "coucher" && reponse != "relancer" && reponse != "tapis")
             {
                 croupier::dire("Les réponses possibles sont suivre, coucher, relancer ou tapis) :)");
@@ -80,28 +80,63 @@ struct Joueur
             }
         }
 
-        if(miseIndiv>jetons && (reponse == "suivre" || reponse == "relancer")){
+        if (miseIndiv > jetons && (reponse == "suivre" || reponse == "relancer"))
+        {
             std::cout << nom << " : je n'ai plus assez de jetons (^^)', je fais tapis" << std::endl;
             return action::tapis;
         }
 
-        switch (reponse)
+        else if (reponse == "suivre")
         {
-        case "suivre":
+            std::cout << nom << " : Je suis !" << std::endl;
             return action::suivre;
-        case "coucher":
-            return action::coucher;
-        case "relancer":
+        }
+        else if (reponse == "relancer")
+        {
+            std::cout << nom << " : Je relance !" << std::endl;
             return action::relancer;
-        case "tapis":
+        }
+        else if (reponse == "tapis")
+        {
+            std::cout << nom << " : Tapis !" << std::endl;
             return action::tapis;
         }
-    }
+        else if (reponse == "coucher")
+        {
+            std::cout << nom << " : Je me couche" << std::endl;
+            return action::coucher;
+        }
+        else {
+            std::cout << "ERREUR, action non reconnue, je me couche" << std::endl;
+            return action::coucher;
+        }
+    };
+    int demanderEchange() {
+        if(isIA == true) {
+            return 2;
+        }
+        int nbrEchange = -1;
+        croupier::dire("Vous pouvez demander entre 0 et 3 cartes");
+        while (nbrEchange < 0 || nbrEchange > 3) {
+            std::cin >> nbrEchange;
+            if(nbrEchange < 0 || nbrEchange > 3) {
+                croupier::dire("Vous pouvez demander entre 0 et 3 cartes");
+                croupier::dire("N'oubliez pas que vous pouvez quitter à tout moment en appuyant sur Ctrl+C");
+            }
+        }
+
+        if (nbrEchange == 0) {
+            std::cout << nom << " : servi" << std::endl;
+        } else  {
+            std::cout << nom << " : " << nbrEchange << " cartes" << std::endl;
+        }
+        return nbrEchange;
+    };
 };
 
 typedef std::vector<Joueur *> Joueurs;
 
-Joueurs initJoueurs(std::string nomJoueur, int nombreIA, int jetonsDepart);
+Joueurs initJoueurs(std::string nomJoueur);
 void clearJoueurs(Joueurs *joueurs);
 
 #endif
