@@ -12,7 +12,7 @@ struct Joueur
     int id;
     std::string nom;
     int jetons;
-    Main main;
+    Cartes main;
     bool isIA;
     void salutations();
     void montrerMain();

@@ -3,7 +3,7 @@
 #include "cartes.hpp"
 #include "joueur.hpp"
 
-void jouer(Paquet *cartes, Joueurs *joueurs);
+void jouer(Cartes *cartes, Joueurs *joueurs);
 
 struct TourJeu
 {

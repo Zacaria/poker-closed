@@ -18,7 +18,7 @@ int main()
     int bouton = joueurs[0]->id; // on donne le bouton au premier joueur // pas besoin parce que c'est ordonné, on a juste besoin du numéro du tour
     croupier::dire("Le bouton est à " + joueurs[0]->nom);
 
-    Paquet paquetCartes = initPaquet();
+    Cartes paquetCartes = initPaquet();
     if (constants::DEBUG_MODE == true)
     {
         afficher(&paquetCartes);

@@ -66,12 +66,30 @@ struct Carte {
     };
 };
 
-typedef std::vector<Carte *> Main;
-typedef std::vector<Carte *> Paquet;
+typedef std::vector<Carte *> Cartes;
 
-Paquet initPaquet();
-void melanger(Paquet *paquet);
-void afficher(Paquet *paquet);
-void clearPaquet(Paquet *paquet);
+Cartes initPaquet();
+void melanger(Cartes *paquet);
+void afficher(Cartes *paquet);
+void clearPaquet(Cartes *paquet);
+
+enum mains {
+    Hauteur,
+    Paire,
+    Double_paire,
+    Brelan,
+    Quinte,
+    Couleur,
+    Full,
+    Carre,
+    Quinte_flush,
+};
+
+struct Combinaison {
+    mains main;
+    int hauteur;
+};
+
+Combinaison combinaisonCartes(Cartes *main);
 
 #endif

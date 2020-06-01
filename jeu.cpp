@@ -7,7 +7,7 @@
 
 int POT_DEPART = 2; // entre 1 et 3 généralement
 
-Carte *tirerCarte(Paquet *cartes)
+Carte *tirerCarte(Cartes *cartes)
 {
     Carte *carte = cartes->back();
     cartes->pop_back();
@@ -15,7 +15,7 @@ Carte *tirerCarte(Paquet *cartes)
 }
 
 //boucle sur tous les joueurs et distribuer 5 cartes par joueurs
-void distribuerCartes(Paquet *cartes, Joueurs joueurs)
+void distribuerCartes(Cartes *cartes, Joueurs joueurs)
 {
     croupier::dire("Je commence à distribuer les cartes");
     for (int i = 0; i < 5; i++)
@@ -85,7 +85,7 @@ int demanderMise(Joueur *joueur, const int miseMin)
     return mise;
 }
 
-void echanges(Paquet *cartes, Joueurs *joueurs)
+void echanges(Cartes *cartes, Joueurs *joueurs)
 {
     croupier::dire("C'est le moment d'échanger des cartes");
     for (auto joueur : *joueurs)
@@ -189,12 +189,12 @@ void encheres(TourJeu *tour)
     }
 }
 
-void ramasserCartes(Paquet *cartes, Joueurs joueurs)
+void ramasserCartes(Cartes *cartes, Joueurs joueurs)
 {
     for (auto joueur : joueurs)
     {
         cartes->insert(cartes->end(), joueur->main.begin(), joueur->main.end());
-        Main mainVide;
+        Cartes mainVide;
         joueur->main = mainVide;
     }
     afficher(cartes);
@@ -222,7 +222,25 @@ void decalerJoueurs(Joueurs *joueurs)
     std::rotate(joueurs->begin(), joueurs->begin() + 1, joueurs->end());
 }
 
-void jouer(Paquet *cartes, Joueurs *joueurs)
+Joueur* calculerVainqueur(Joueurs *joueurs) {
+    Combinaison meilleurCombi;
+    Joueur *meilleurJoueur;
+    for(auto joueur: *joueurs) {
+        Combinaison combinaison = combinaisonCartes(&joueur->main);
+        if(combinaison.main == meilleurCombi.main && combinaison.hauteur > meilleurCombi.hauteur) {
+            meilleurCombi = combinaison;
+            meilleurJoueur = joueur;
+        }
+        if(combinaison.main > meilleurCombi.main) {
+            meilleurCombi = combinaison;
+            meilleurJoueur = joueur;
+        }
+    }
+
+    return meilleurJoueur;
+}
+
+void jouer(Cartes *cartes, Joueurs *joueurs)
 {
     croupier::dire("Le jeu commence");
 
@@ -234,6 +252,7 @@ void jouer(Paquet *cartes, Joueurs *joueurs)
         TourJeu *tour = new TourJeu();
         tour->joueurs = getJoueursTour(joueurs);
 
+        // couper le paquet 
         distribuerCartes(cartes, tour->joueurs);
 
         croupier::dire("Envoyez le pot de départ !");
@@ -266,6 +285,8 @@ void jouer(Paquet *cartes, Joueurs *joueurs)
 
         // Fin du coup : calcul des combinaisons des cartes
         // donner la mise du tour au gagnant au gagnant
+        Joueur *vainqueur = calculerVainqueur(&tour->joueurs);
+        vainqueur->jetons += tour->mises;
 
         // Récupérer les cartes dans le paquet
         ramasserCartes(cartes, tour->joueurs);
