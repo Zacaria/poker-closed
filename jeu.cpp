@@ -69,7 +69,7 @@ void coucherJoueur(Joueurs *joueurs, int idToExclude)
 int demanderMise(Joueur *joueur, const int miseMin)
 {
     int mise = 0;
-    while (mise > joueur->jetons - 1 || mise < miseMin)
+    while (mise > joueur->jetons || mise < miseMin)
     {
         croupier::dire("Vous misez combien ? Pour rappel, vous avez " + std::to_string(joueur->jetons) + " jetons");
         std::cin >> mise;
@@ -120,7 +120,7 @@ void encheres(TourJeu *tour)
 {
     for (auto joueur : tour->joueurs)
     {
-        if (tour->ouvert == false) // achanger ici
+        if (tour->ouvert == false)
         {
             // Parler
             tour->ouvert = joueur->parlerFermer();
@@ -140,11 +140,11 @@ void encheres(TourJeu *tour)
                     tour->mises += mise;
                 }
                 tour->miseIndiv = mise;
-                croupier::dire("Total mises " + std::to_string(tour->mises));
             }
         }
         else
         {
+
             // Parler
             action reponse = joueur->parlerOuvert(tour->miseIndiv);
 
@@ -254,11 +254,15 @@ void jouer(Paquet *cartes, Joueurs *joueurs)
         // premières enchères
         encheres(tour);
 
+        croupier::dire("Total mises " + std::to_string(tour->mises));
+
         // échanges
         echanges(cartes, joueurs);
 
         // deuxièmes enchères
         encheres(tour);
+
+        croupier::dire("Total mises " + std::to_string(tour->mises));
 
         // Fin du coup : calcul des combinaisons des cartes
         // donner la mise du tour au gagnant au gagnant

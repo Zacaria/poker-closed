@@ -48,10 +48,11 @@ struct Joueur
         }
         std::cout << "Voulez-vous ouvrir (Yes/No)" << std::endl;
 
-        std::string reponse = "";
+        std::string reponse;
 
         while (reponse != "Yes" && reponse != "No")
         {
+            
             std::getline(std::cin, reponse);
             if (reponse != "Yes" && reponse != "No")
             {
@@ -63,11 +64,11 @@ struct Joueur
     }
     action parlerOuvert(const int miseIndiv)
     {
-        if (isIA)
+        if (isIA == true)
         {
             return action::suivre; // action par défaut à changer quand on mettra de l'intelligence
         }
-        std::string reponse = "";
+        std::string reponse;
 
         while (reponse != "suivre" && reponse != "coucher" && reponse != "relancer" && reponse != "tapis")
         {
@@ -119,6 +120,8 @@ struct Joueur
         croupier::dire("Vous pouvez demander entre 0 et 3 cartes");
         while (nbrEchange < 0 || nbrEchange > 3) {
             std::cin >> nbrEchange;
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
             if(nbrEchange < 0 || nbrEchange > 3) {
                 croupier::dire("Vous pouvez demander entre 0 et 3 cartes");
                 croupier::dire("N'oubliez pas que vous pouvez quitter à tout moment en appuyant sur Ctrl+C");
