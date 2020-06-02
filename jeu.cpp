@@ -67,24 +67,24 @@ void coucherJoueur(Joueurs *joueurs, int idToExclude)
     joueurs->shrink_to_fit();
 }
 
-int demanderMise(Joueur *joueur, const int miseMin)
-{
-    int mise = 0;
-    while (mise > joueur->jetons || mise < miseMin)
-    {
-        croupier::dire("Vous misez combien ? Pour rappel, vous avez " + std::to_string(joueur->jetons) + " jetons");
-        std::cin >> mise;
-        if (joueur->jetons < mise)
-        {
-            croupier::dire("Vous ne pouvez pas miser plus de " + std::to_string(joueur->jetons) + " jetons");
-        }
-        if (mise < miseMin)
-        {
-            croupier::dire("La mise minimum est de " + std::to_string(miseMin));
-        }
-    }
-    return mise;
-}
+// int demanderMise(Joueur *joueur, const int miseMin)
+// {
+//     int mise = 0;
+//     while (mise > joueur->jetons || mise < miseMin)
+//     {
+//         croupier::dire("Vous misez combien ? Pour rappel, vous avez " + std::to_string(joueur->jetons) + " jetons");
+//         std::cin >> mise;
+//         if (joueur->jetons < mise)
+//         {
+//             croupier::dire("Vous ne pouvez pas miser plus de " + std::to_string(joueur->jetons) + " jetons");
+//         }
+//         if (mise < miseMin)
+//         {
+//             croupier::dire("La mise minimum est de " + std::to_string(miseMin));
+//         }
+//     }
+//     return mise;
+// }
 
 void echanges(Cartes *cartes, Joueurs *joueurs)
 {
@@ -128,12 +128,8 @@ void encheres(TourJeu *tour)
             // Miser si ouverture
             if (tour->ouvert == true)
             {
-                int mise;
-                if(joueur->isIA == true) {
-                    mise = 2;
-                } else {
-                    mise = demanderMise(joueur, 1);
-                }
+                int mise = 1;
+                mise = joueur->demanderMise(constants::JETONS_DEPART);
                 bool reussi = joueur->miser(mise);
                 if (reussi == false)
                 { // on fait tapis
@@ -165,7 +161,7 @@ void encheres(TourJeu *tour)
             case action::relancer:
                 // demander la relance de combien ?
                 int mise;
-                mise = demanderMise(joueur, tour->miseIndiv);
+                mise = joueur->demanderMise(tour->miseIndiv);
                 bool reussi;
                 reussi = joueur->miser(mise);
                 if (reussi == false)

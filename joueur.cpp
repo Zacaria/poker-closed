@@ -5,15 +5,32 @@
 #include "joueur.hpp"
 #include "utils.hpp"
 #include "constants.hpp"
+#include "comportements/comportement.hpp"
+#include "comportements/basiqueIA.cpp"
+#include "comportements/prudentIA.cpp"
+#include "comportements/humain.cpp"
 
 std::array<std::string, 8> noms = {
     "Yahya", "Anna", "Laila", "Idir", "Hamadi", "Gael", "Foued", "Marie"};
 
+comportements::BasiqueIA basique{};
+comportements::PrudentIA prudent{};
+comportements::Humain humain{};
+
 Joueurs initJoueurs(std::string nomJoueurReel)
 {
     Joueurs joueurs;
+    std::string comportement;
     for (int i = 0; i < constants::JOUEURS_IA; i++)
     {
+        if (i % 2 == 0)
+        {
+            comportement = "basique";
+        }
+        if (i % 2 == 1)
+        {
+            comportement = "prudent";
+        }
         std::string nomJoueur = noms[i % noms.size()] + "_"; // modulo pour être sur de ne jamais sortir du tableau
         nomJoueur += i + 'O';                                // on ajoute un caractère la fin du prénom pour que le nom soit unique
         Joueur *joueurIA = new Joueur{
@@ -21,6 +38,7 @@ Joueurs initJoueurs(std::string nomJoueurReel)
             .nom = nomJoueur,
             .jetons = constants::JETONS_DEPART,
             .isIA = true,
+            .comportement = comportement,
         };
         joueurIA->main.reserve(5);
         joueurs.push_back(joueurIA);
@@ -33,6 +51,7 @@ Joueurs initJoueurs(std::string nomJoueurReel)
         .nom = nomJoueurReel,
         .jetons = constants::JETONS_DEPART,
         .isIA = false,
+        .comportement = "humain",
     };
     joueurReel->main.reserve(5);
     joueurs.push_back(joueurReel);
@@ -81,25 +100,36 @@ bool Joueur::miser(int nbJetons)
 
 bool Joueur::parlerFermer()
 {
-    if (isIA == true)
+    if (comportement == "basique")
     {
-        std::cout << "Je suis " << isIA << ", j'ouvre" << std::endl;
-        return true; // action par défaut à changer quand on mettra de l'intelligence
+        return basique.parlerFermer();
     }
-    std::cout << "Voulez-vous ouvrir (Yes/No)" << std::endl;
-
-    std::string reponse;
-
-    while (reponse != "Yes" && reponse != "No")
+    if (comportement == "prudent")
     {
-        std::getline(std::cin, reponse);
-        if (reponse != "Yes" && reponse != "No")
-        {
-            croupier::dire("Les réponses possibles sont Yes ou No :)");
-            croupier::dire("N'oubliez pas que vous pouvez quitter à tout moment en appuyant sur Ctrl+C");
-        }
+        return prudent.parlerFermer();
     }
-    return reponse == "Yes";
+    if (comportement == "humain")
+    {
+        return humain.parlerFermer();
+    }
+    // if (isIA == true)
+    // {
+    //     return comportement.parlerFermer();
+    // }
+    // std::cout << "Voulez-vous ouvrir (Yes/No)" << std::endl;
+
+    // std::string reponse;
+
+    // while (reponse != "Yes" && reponse != "No")
+    // {
+    //     std::getline(std::cin, reponse);
+    //     if (reponse != "Yes" && reponse != "No")
+    //     {
+    //         croupier::dire("Les réponses possibles sont Yes ou No :)");
+    //         croupier::dire("N'oubliez pas que vous pouvez quitter à tout moment en appuyant sur Ctrl+C");
+    //     }
+    // }
+    // return reponse == "Yes";
 }
 
 action Joueur::parlerOuvert(const int miseIndiv)
@@ -183,4 +213,28 @@ int Joueur::demanderEchange()
         std::cout << nom << " : " << nbrEchange << " cartes" << std::endl;
     }
     return nbrEchange;
+}
+
+int Joueur::demanderMise(const int miseMin)
+{
+    if (isIA == true)
+    {
+        return 2;
+    }
+
+    int mise = 0;
+    while (mise > jetons || mise < miseMin)
+    {
+        croupier::dire("Vous misez combien ? Pour rappel, vous avez " + std::to_string(jetons) + " jetons");
+        std::cin >> mise;
+        if (jetons < mise)
+        {
+            croupier::dire("Vous ne pouvez pas miser plus de " + std::to_string(jetons) + " jetons");
+        }
+        if (mise < miseMin)
+        {
+            croupier::dire("La mise minimum est de " + std::to_string(miseMin));
+        }
+    }
+    return mise;
 }

@@ -6,12 +6,8 @@
 #include "cartes.hpp"
 #include "croupier.hpp"
 #include "action.hpp"
-struct Comportement {
-    void parlerOuvert();
-    void parlerFermer();
-    void miser();
-    void echanger();
-};
+#include "comportements/comportement.hpp"
+
 struct Joueur
 {
     int id;
@@ -19,13 +15,14 @@ struct Joueur
     int jetons;
     Cartes main;
     bool isIA;
-    Comportement comportement;
+    std::string comportement;
     void salutations();
     void montrerMain();
     bool miser(int nbJetons);
     bool parlerFermer();
     action parlerOuvert(const int miseIndiv);
     int demanderEchange();
+    int demanderMise(const int miseMin);
 };
 
 typedef std::vector<Joueur *> Joueurs;
