@@ -10,6 +10,7 @@ struct Comportement {
     void parlerOuvert();
     void parlerFermer();
     void miser();
+    void echanger();
 };
 struct Joueur
 {

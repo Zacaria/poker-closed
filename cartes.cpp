@@ -1,6 +1,7 @@
 #include <array> // shuffle
 #include <iostream>
 #include <map>
+#include <algorithm> // sort
 #include "cartes.hpp"
 #include "utils.hpp"
 #include "random"
@@ -110,17 +111,14 @@ int getHauteur(int valeur)
 }
 
 // traite le cas de l'as en terme de valeur
-int getMaxValeur(Carte *carteA, int hauteurCompare)
+int getMaxValeur(int hauteurA, int hauteurB)
 {
-    if (getHauteur(carteA->valeur) > getHauteur(hauteurCompare))
+    // std::cout << "hauteurA " << hauteurA << " hauteurB" << hauteurB << std::endl;
+    if (getHauteur(hauteurA) > getHauteur(hauteurB))
     {
-        return getHauteur(carteA->valeur);
+        return getHauteur(hauteurA);
     }
-    return getHauteur(hauteurCompare);
-}
-
-int isQuinteFlush(Cartes *main)
-{
+    return getHauteur(hauteurB);
 }
 
 int isCarre(Cartes *main)
@@ -132,8 +130,8 @@ int isCarre(Cartes *main)
         valeurs[carte->valeur]++;
     }
 
-    bool carre;
-    int hauteurCarre;
+    bool carre = false;
+    int hauteurCarre = -1;
     for (auto const &[hauteur, occurences] : valeurs)
     {
         if (occurences == 4)
@@ -142,7 +140,7 @@ int isCarre(Cartes *main)
             hauteurCarre = getHauteur(hauteur);
         }
     }
-    if (carre)
+    if (carre == true)
     {
         return hauteurCarre;
     }
@@ -160,17 +158,13 @@ int isFull(Cartes *main)
 
     bool paire = false;
     bool brelan = false;
-    int hauteurFull;
-    std::cout << "paire " << paire << " brelan : " << brelan << std::endl;
+    int hauteurFull = -1;
     for (auto const &[hauteur, occurences] : valeurs)
     {
 
-        std::cout << "hauteur " << hauteur << " occurences" << occurences << std::endl;
         // deuxième paire
         if (occurences == 3)
         {
-
-            std::cout << "occurences = 3 ?" << occurences << std::endl;
             brelan = true;
             hauteurFull = getHauteur(hauteur);
         }
@@ -181,7 +175,6 @@ int isFull(Cartes *main)
         }
     }
 
-    std::cout << "paire " << paire << " brelan : " << brelan << std::endl;
     if (paire == true && brelan == true)
     {
         return hauteurFull;
@@ -192,14 +185,13 @@ int isFull(Cartes *main)
 
 int isCouleur(Cartes *main)
 {
-    int nbCouleurs;
     std::map<std::string, int> couleurs;
 
-    int hauteurMax;
+    int hauteurMax = -1;
     for (auto carte : *main)
     {
         couleurs[carte->couleur]++;
-        hauteurMax = getMaxValeur(carte, hauteurMax);
+        hauteurMax = getMaxValeur(carte->valeur, hauteurMax);
     }
 
     if (couleurs.size() != 1)
@@ -214,6 +206,52 @@ int isCouleur(Cartes *main)
 // a noter que l'as peut compter comme 0 et 13
 int isQuinte(Cartes *main)
 {
+    std::array<int, 5> valeursAsZero;
+    std::array<int, 5> valeursAsTreize;
+    int j = 0;
+
+    for (auto carte : *main)
+    {
+        valeursAsZero.at(j) = carte->valeur;
+        valeursAsTreize.at(j) = getHauteur(carte->valeur);
+        j++;
+    }
+    std::sort(valeursAsZero.begin(), valeursAsZero.end());
+    std::sort(valeursAsTreize.begin(), valeursAsTreize.end());
+
+    auto isValeursConsecutives = [](std::array<int, 5> vals) {
+        bool isConsecutives = true;
+        int hauteur = -1;
+        for (int i = 0; i < vals.size(); i++)
+        {
+            if (i > 0 && (vals[i] - vals[i - 1] != 1))
+            {
+                isConsecutives = false;
+            }
+            hauteur = getMaxValeur(hauteur, vals[i]);
+        }
+
+        if (isConsecutives == true)
+        {
+            return hauteur;
+        }
+
+        return -1;
+    };
+
+    int isConsecutiveZero = isValeursConsecutives(valeursAsZero);
+    int isConsecutiveTreize = isValeursConsecutives(valeursAsTreize);
+
+    if (isConsecutiveZero != -1)
+    {
+        return isConsecutiveZero;
+    }
+    if (isConsecutiveTreize != -1)
+    {
+        return isConsecutiveTreize;
+    }
+
+    return -1;
 }
 
 int isBrelan(Cartes *main)
@@ -225,8 +263,8 @@ int isBrelan(Cartes *main)
         valeurs[carte->valeur]++;
     }
 
-    bool brelan;
-    int hauteurBrelan;
+    bool brelan = false;
+    int hauteurBrelan = -1;
 
     for (auto const &[hauteur, occurences] : valeurs)
     {
@@ -237,7 +275,7 @@ int isBrelan(Cartes *main)
         }
     }
 
-    if (brelan)
+    if (brelan == true)
     {
         return hauteurBrelan;
     }
@@ -256,7 +294,7 @@ int isDoublePaire(Cartes *main)
 
     bool paire;
     bool doublePaire;
-    int hauteurPaire;
+    int hauteurPaire = -1;
     for (auto const &[hauteur, occurences] : valeurs)
     {
         // deuxième paire
@@ -290,7 +328,7 @@ int isPaire(Cartes *main)
     }
 
     bool paire;
-    int hauteurPaire;
+    int hauteurPaire = -1;
     for (auto const &[hauteur, occurences] : valeurs)
     {
         if (occurences == 2)
@@ -306,12 +344,28 @@ int isPaire(Cartes *main)
     return -1;
 }
 
-int getHauteur(Cartes *main)
+// Quinte flush est quinte et couleur
+int isQuinteFlush(Cartes *main)
 {
-    int hauteurMax;
+    int isQuinteMain = -1;
+    int isCouleurMain = -1;
+    isQuinteMain = isQuinte(main);
+    isCouleurMain = isCouleur(main);
+
+    if (isQuinteMain != -1 && isCouleurMain != -1)
+    {
+        return isQuinteMain;
+    }
+
+    return -1;
+}
+
+int getHauteurMain(Cartes *main)
+{
+    int hauteurMax = -1;
     for (auto carte : *main)
     {
-        hauteurMax = getMaxValeur(carte, hauteurMax);
+        hauteurMax = getMaxValeur(carte->valeur, hauteurMax);
     }
     return hauteurMax;
 }
@@ -319,6 +373,12 @@ int getHauteur(Cartes *main)
 Combinaison combinaisonCartes(Cartes *main)
 {
     // l'ordre des if est important
+    int resultQuinteFlush = isQuinteFlush(main);
+    if (resultQuinteFlush != -1)
+    {
+        return Combinaison{Quinte_flush, resultQuinteFlush};
+    }
+
     int resultIsCarre = isCarre(main);
     if (resultIsCarre != -1)
     {
@@ -328,7 +388,6 @@ Combinaison combinaisonCartes(Cartes *main)
     int resultIsFull = isFull(main);
     if (resultIsFull != -1)
     {
-        std::cout << "resultisfull" << resultIsFull << std::endl;
         return Combinaison{Full, resultIsFull};
     }
 
@@ -338,11 +397,11 @@ Combinaison combinaisonCartes(Cartes *main)
         return Combinaison{Couleur, resultIsCouleur};
     }
 
-    // int resultIsQuinte = isQuinte(main);
-    // if (resultIsQuinte != -1)
-    // {
-    //     return Combinaison{Quinte, resultIsQuinte};
-    // }
+    int resultIsQuinte = isQuinte(main);
+    if (resultIsQuinte != -1)
+    {
+        return Combinaison{Quinte, resultIsQuinte};
+    }
 
     int resultIsBrelan = isBrelan(main);
     if (resultIsBrelan != -1)
@@ -362,6 +421,82 @@ Combinaison combinaisonCartes(Cartes *main)
         return Combinaison{Paire, resultIsPaire};
     }
 
-    int hauteurMain = getHauteur(main);
+    int hauteurMain = getHauteurMain(main);
     return Combinaison{Hauteur, hauteurMain};
+}
+
+std::string idCarteToString(int id)
+{
+    switch (id)
+    {
+    case cartes::as:
+    case 13:
+        return "as";
+    case cartes::deux:
+        return "deux";
+    case cartes::trois:
+        return "trois";
+    case cartes::quatre:
+        return "quatre";
+    case cartes::cinq:
+        return "cinq";
+    case cartes::six:
+        return "six";
+    case cartes::sept:
+        return "sept";
+    case cartes::huit:
+        return "huit";
+    case cartes::neuf:
+        return "neuf";
+    case cartes::dix:
+        return "dix";
+    case cartes::valet:
+        return "valet";
+    case cartes::dame:
+        return "dame";
+    case cartes::roi:
+        return "roi";
+    default:
+        return " carte inconnue";
+    }
+}
+
+void Combinaison::afficher()
+{
+    if (main == Hauteur)
+    {
+        std::cout << "Hauteur de " << idCarteToString(hauteur) << std::endl;
+    }
+    if (main == Paire)
+    {
+        std::cout << "Paire de " << idCarteToString(hauteur) << std::endl;
+    }
+    if (main == Double_paire)
+    {
+        std::cout << "Double_paire de " << idCarteToString(hauteur) << std::endl;
+    }
+    if (main == Brelan)
+    {
+        std::cout << "Brelan de " << idCarteToString(hauteur) << std::endl;
+    }
+    if (main == Quinte)
+    {
+        std::cout << "Quinte de " << idCarteToString(hauteur) << std::endl;
+    }
+    if (main == Couleur)
+    {
+        std::cout << "Couleur de " << idCarteToString(hauteur) << std::endl;
+    }
+    if (main == Full)
+    {
+        std::cout << "Full de " << idCarteToString(hauteur) << std::endl;
+    }
+    if (main == Carre)
+    {
+        std::cout << "Carre de " << idCarteToString(hauteur) << std::endl;
+    }
+    if (main == Quinte_flush)
+    {
+        std::cout << "Quinte_flush de " << idCarteToString(hauteur) << std::endl;
+    }
 }

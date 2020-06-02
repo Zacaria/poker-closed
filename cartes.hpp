@@ -21,7 +21,7 @@ namespace cartes
         dix,
         valet,
         dame,
-        roi
+        roi,
     };
 
     const std::string dos = u8"\033[34m\033[47m🂠\33[0m";
@@ -88,6 +88,7 @@ enum mains {
 struct Combinaison {
     mains main;
     int hauteur;
+    void afficher();
 };
 
 Combinaison combinaisonCartes(Cartes *main);

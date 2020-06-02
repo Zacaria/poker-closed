@@ -229,7 +229,7 @@ void decalerJoueurs(Joueurs *joueurs)
 Joueur* calculerVainqueur(Joueurs *joueurs) {
     Combinaison meilleurCombi;
     Joueur *meilleurJoueur;
-    bool passePremier;
+    bool passePremier = false;
     for(auto joueur: *joueurs) {
         Combinaison combinaison = combinaisonCartes(&joueur->main);
         if (passePremier == false) { // On n'a personne à comparer avec le premier alors on le met en meilleur d'office
@@ -238,7 +238,7 @@ Joueur* calculerVainqueur(Joueurs *joueurs) {
             passePremier = true;
             continue;
         }
-        
+
         if(combinaison.main == meilleurCombi.main && combinaison.hauteur > meilleurCombi.hauteur) {
             meilleurCombi = combinaison;
             meilleurJoueur = joueur;
@@ -251,10 +251,12 @@ Joueur* calculerVainqueur(Joueurs *joueurs) {
         }
 
         std::cout << joueur->nom << " : ";
+        combinaison.afficher();
         afficher(&joueur->main);
-        std::cout << std::endl;
+        std::cout << " vs ";
 
-        std::cout << " meilleur main " << meilleurJoueur->nom << " : ";
+        std::cout << "Meilleur main " << meilleurJoueur->nom << " : ";
+        meilleurCombi.afficher();
         afficher(&meilleurJoueur->main);
         std::cout << std::endl;
     }
@@ -324,15 +326,4 @@ void jouer(Cartes *cartes, Joueurs *joueurs)
         croupier::dire("Maintenant c'est " + joueurs->front()->nom + " qui commence");
         delete tour;
     }
-
-    // Jouer des tours jusqu'à la fin
-    //
-    // Pot de départ
-    // Distribuer des cartes
-    // Regarder les cartes
-    // (AnteEnchere) Faire parler tous le joueurs jusqu'à alignement
-    // Echanger (tirer du paquet, pas de défausse, il y a juste le reste du paquet, et les cartes a ne pas donner)
-    // Enchere
-    // Resolution
-    // changer l'ordre des joueurs pour Faire avancer le bouton
 }
