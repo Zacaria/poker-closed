@@ -98,22 +98,29 @@ int compteMaxOccurences(Cartes *main)
     return maxOccurence;
 }
 
-// traite le cas de l'as en terme de valeur
-int getMaxValeur(Carte *carteA, int hauteurCompare) {
-    // valeur 0 est l'as, l'as est le plus fort, donc on donne 13
-    if (carteA->valeur == 0 || hauteurCompare == 0) {
+// la hauteur de l'as est 13
+// sinon les autres cartes ont la même hauteur que leur valeur
+int getHauteur(int valeur)
+{
+    if (valeur == 0)
+    {
         return 13;
     }
-    if (carteA->valeur > hauteurCompare)
+    return valeur;
+}
+
+// traite le cas de l'as en terme de valeur
+int getMaxValeur(Carte *carteA, int hauteurCompare)
+{
+    if (getHauteur(carteA->valeur) > getHauteur(hauteurCompare))
     {
-        return carteA->valeur;
+        return getHauteur(carteA->valeur);
     }
-    return hauteurCompare;
+    return getHauteur(hauteurCompare);
 }
 
 int isQuinteFlush(Cartes *main)
 {
-
 }
 
 int isCarre(Cartes *main)
@@ -132,10 +139,11 @@ int isCarre(Cartes *main)
         if (occurences == 4)
         {
             carre = true;
-            hauteurCarre = hauteur;
+            hauteurCarre = getHauteur(hauteur);
         }
     }
-    if (carre) {
+    if (carre)
+    {
         return hauteurCarre;
     }
     return -1;
@@ -148,7 +156,6 @@ int isFull(Cartes *main)
     for (auto carte : *main)
     {
         valeurs[carte->valeur]++;
-
     }
 
     bool paire = false;
@@ -165,7 +172,7 @@ int isFull(Cartes *main)
 
             std::cout << "occurences = 3 ?" << occurences << std::endl;
             brelan = true;
-            hauteurFull = hauteur;
+            hauteurFull = getHauteur(hauteur);
         }
         // première paire
         if (occurences == 2)
@@ -175,7 +182,8 @@ int isFull(Cartes *main)
     }
 
     std::cout << "paire " << paire << " brelan : " << brelan << std::endl;
-    if (paire == true && brelan == true) {
+    if (paire == true && brelan == true)
+    {
         return hauteurFull;
     }
 
@@ -194,16 +202,18 @@ int isCouleur(Cartes *main)
         hauteurMax = getMaxValeur(carte, hauteurMax);
     }
 
-    if (couleurs.size() != 1) {
+    if (couleurs.size() != 1)
+    {
         return -1;
     }
 
     return hauteurMax;
 }
 
+// quinte est une suite
+// a noter que l'as peut compter comme 0 et 13
 int isQuinte(Cartes *main)
 {
-    
 }
 
 int isBrelan(Cartes *main)
@@ -223,11 +233,12 @@ int isBrelan(Cartes *main)
         if (occurences == 3)
         {
             brelan = true;
-            hauteurBrelan = hauteur;
+            hauteurBrelan = getHauteur(hauteur);
         }
     }
 
-    if (brelan) {
+    if (brelan)
+    {
         return hauteurBrelan;
     }
 
@@ -252,16 +263,17 @@ int isDoublePaire(Cartes *main)
         if (occurences == 2 && paire == true)
         {
             doublePaire = true;
-            hauteurPaire = hauteur > hauteurPaire ? hauteur : hauteurPaire;
+            hauteurPaire = getHauteur(hauteur) > getHauteur(hauteurPaire) ? getHauteur(hauteur) : getHauteur(hauteurPaire);
         }
         // première paire
         if (occurences == 2 && doublePaire == false)
         {
             paire = true;
-            hauteurPaire = hauteur;
+            hauteurPaire = getHauteur(hauteur);
         }
     }
-    if (doublePaire) {
+    if (doublePaire)
+    {
         return hauteurPaire;
     }
 
@@ -284,10 +296,11 @@ int isPaire(Cartes *main)
         if (occurences == 2)
         {
             paire = true;
-            hauteurPaire = hauteur;
+            hauteurPaire = getHauteur(hauteur);
         }
     }
-    if (paire) {
+    if (paire)
+    {
         return hauteurPaire;
     }
     return -1;
@@ -302,8 +315,6 @@ int getHauteur(Cartes *main)
     }
     return hauteurMax;
 }
-
-
 
 Combinaison combinaisonCartes(Cartes *main)
 {
