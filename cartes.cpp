@@ -1,4 +1,4 @@
-#include <array>
+#include <array> // shuffle
 #include <iostream>
 #include <map>
 #include "cartes.hpp"
@@ -111,12 +111,12 @@ int getMaxValeur(Carte *carteA, int hauteurCompare) {
     return hauteurCompare;
 }
 
-bool isQuinteFlush(Cartes *main)
+int isQuinteFlush(Cartes *main)
 {
 
 }
 
-bool isCarre(Cartes *main)
+int isCarre(Cartes *main)
 {
     std::map<int, int> valeurs;
 
@@ -141,33 +141,41 @@ bool isCarre(Cartes *main)
     return -1;
 }
 
-bool isFull(Cartes *main)
+int isFull(Cartes *main)
 {
     std::map<int, int> valeurs;
 
     for (auto carte : *main)
     {
         valeurs[carte->valeur]++;
+
     }
 
-    bool paire;
-    bool brelan;
+    bool paire = false;
+    bool brelan = false;
     int hauteurFull;
+    std::cout << "paire " << paire << " brelan : " << brelan << std::endl;
     for (auto const &[hauteur, occurences] : valeurs)
     {
+
+        std::cout << "hauteur " << hauteur << " occurences" << occurences << std::endl;
         // deuxième paire
         if (occurences == 3)
         {
+
+            std::cout << "occurences = 3 ?" << occurences << std::endl;
             brelan = true;
             hauteurFull = hauteur;
         }
         // première paire
-        if (occurences == 2 )
+        if (occurences == 2)
         {
             paire = true;
         }
     }
-    if (paire && brelan) {
+
+    std::cout << "paire " << paire << " brelan : " << brelan << std::endl;
+    if (paire == true && brelan == true) {
         return hauteurFull;
     }
 
@@ -193,12 +201,12 @@ int isCouleur(Cartes *main)
     return hauteurMax;
 }
 
-bool isQuinte(Cartes *main)
+int isQuinte(Cartes *main)
 {
     
 }
 
-bool isBrelan(Cartes *main)
+int isBrelan(Cartes *main)
 {
     std::map<int, int> valeurs;
 
@@ -309,6 +317,7 @@ Combinaison combinaisonCartes(Cartes *main)
     int resultIsFull = isFull(main);
     if (resultIsFull != -1)
     {
+        std::cout << "resultisfull" << resultIsFull << std::endl;
         return Combinaison{Full, resultIsFull};
     }
 
@@ -318,11 +327,11 @@ Combinaison combinaisonCartes(Cartes *main)
         return Combinaison{Couleur, resultIsCouleur};
     }
 
-    int resultIsQuinte = isQuinte(main);
-    if (resultIsQuinte != -1)
-    {
-        return Combinaison{Quinte, resultIsQuinte};
-    }
+    // int resultIsQuinte = isQuinte(main);
+    // if (resultIsQuinte != -1)
+    // {
+    //     return Combinaison{Quinte, resultIsQuinte};
+    // }
 
     int resultIsBrelan = isBrelan(main);
     if (resultIsBrelan != -1)

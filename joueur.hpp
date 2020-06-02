@@ -6,7 +6,11 @@
 #include "cartes.hpp"
 #include "croupier.hpp"
 #include "action.hpp"
-
+struct Comportement {
+    void parlerOuvert();
+    void parlerFermer();
+    void miser();
+};
 struct Joueur
 {
     int id;
@@ -14,6 +18,7 @@ struct Joueur
     int jetons;
     Cartes main;
     bool isIA;
+    Comportement comportement;
     void salutations();
     void montrerMain();
     bool miser(int nbJetons);
@@ -26,5 +31,7 @@ typedef std::vector<Joueur *> Joueurs;
 
 Joueurs initJoueurs(std::string nomJoueur);
 void clearJoueurs(Joueurs *joueurs);
+
+
 
 #endif

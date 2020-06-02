@@ -9,7 +9,7 @@
 std::array<std::string, 8> noms = {
     "Yahya", "Anna", "Laila", "Idir", "Hamadi", "Gael", "Foued", "Marie"};
 
-Joueurs initJoueurs(std::string nomJoueur)
+Joueurs initJoueurs(std::string nomJoueurReel)
 {
     Joueurs joueurs;
     for (int i = 0; i < constants::JOUEURS_IA; i++)
@@ -30,7 +30,7 @@ Joueurs initJoueurs(std::string nomJoueur)
 
     Joueur *joueurReel = new Joueur{
         .id = constants::JOUEURS_IA,
-        .nom = nomJoueur,
+        .nom = nomJoueurReel,
         .jetons = constants::JETONS_DEPART,
         .isIA = false,
     };
@@ -84,7 +84,7 @@ bool Joueur::parlerFermer()
     if (isIA == true)
     {
         std::cout << "Je suis " << isIA << ", j'ouvre" << std::endl;
-        return false; // action par défaut à changer quand on mettra de l'intelligence
+        return true; // action par défaut à changer quand on mettra de l'intelligence
     }
     std::cout << "Voulez-vous ouvrir (Yes/No)" << std::endl;
 

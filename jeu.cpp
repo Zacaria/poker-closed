@@ -34,6 +34,7 @@ int potDepart(Joueurs joueurs)
     int mises = 0;
     for (auto joueur : joueurs)
     {
+        // possiblité de tapis ?
         joueur->miser(POT_DEPART);
         mises += POT_DEPART;
     }
@@ -110,8 +111,8 @@ void echanges(Cartes *cartes, Joueurs *joueurs)
 
         if (joueur->isIA == false || constants::DEBUG_MODE == true)
         {
-            croupier::dire("Voici " + std::to_string(nbCartesDonnees) + " cartes");
             afficher(&joueur->main);
+            croupier::dire(joueur->nom + ", voici " + std::to_string(nbCartesDonnees) + " cartes");
         }
     }
 }
@@ -124,11 +125,15 @@ void encheres(TourJeu *tour)
         {
             // Parler
             tour->ouvert = joueur->parlerFermer();
-            std::cout << "est ce ouvert: " << tour->ouvert << std::endl;
             // Miser si ouverture
             if (tour->ouvert == true)
             {
-                int mise = demanderMise(joueur, 1);
+                int mise;
+                if(joueur->isIA == true) {
+                    mise = 2;
+                } else {
+                    mise = demanderMise(joueur, 1);
+                }
                 bool reussi = joueur->miser(mise);
                 if (reussi == false)
                 { // on fait tapis
@@ -144,7 +149,6 @@ void encheres(TourJeu *tour)
         }
         else
         {
-
             // Parler
             action reponse = joueur->parlerOuvert(tour->miseIndiv);
 
@@ -225,16 +229,34 @@ void decalerJoueurs(Joueurs *joueurs)
 Joueur* calculerVainqueur(Joueurs *joueurs) {
     Combinaison meilleurCombi;
     Joueur *meilleurJoueur;
+    bool passePremier;
     for(auto joueur: *joueurs) {
         Combinaison combinaison = combinaisonCartes(&joueur->main);
+        if (passePremier == false) { // On n'a personne à comparer avec le premier alors on le met en meilleur d'office
+            meilleurJoueur = joueur;
+            meilleurCombi = combinaison;
+            passePremier = true;
+            continue;
+        }
+        
         if(combinaison.main == meilleurCombi.main && combinaison.hauteur > meilleurCombi.hauteur) {
             meilleurCombi = combinaison;
             meilleurJoueur = joueur;
+            croupier::dire(std::to_string(combinaison.main) + " bat " + std::to_string(combinaison.main) + " à la hauteur " + std::to_string(combinaison.hauteur));
         }
         if(combinaison.main > meilleurCombi.main) {
             meilleurCombi = combinaison;
             meilleurJoueur = joueur;
+            croupier::dire(std::to_string(combinaison.main) + " bat " + std::to_string(combinaison.main));
         }
+
+        std::cout << joueur->nom << " : ";
+        afficher(&joueur->main);
+        std::cout << std::endl;
+
+        std::cout << " meilleur main " << meilleurJoueur->nom << " : ";
+        afficher(&meilleurJoueur->main);
+        std::cout << std::endl;
     }
 
     return meilleurJoueur;
@@ -245,7 +267,7 @@ void jouer(Cartes *cartes, Joueurs *joueurs)
     croupier::dire("Le jeu commence");
 
     // Début d'un boucle qui sort quand il ne reste plus qu'un joueur qui joue
-    for (size_t i = 0; i < 5; i++)
+    for (size_t i = 0; i < 5; i++) // mettre la condition de sortie
     {
         croupier::dire("Début du tour " + std::to_string(i));
 
@@ -286,15 +308,16 @@ void jouer(Cartes *cartes, Joueurs *joueurs)
         // Fin du coup : calcul des combinaisons des cartes
         // donner la mise du tour au gagnant au gagnant
         Joueur *vainqueur = calculerVainqueur(&tour->joueurs);
+
+        // règle avec tapis ?
         vainqueur->jetons += tour->mises;
+
+        croupier::dire(vainqueur->nom + " remporte la mise !");
 
         // Récupérer les cartes dans le paquet
         ramasserCartes(cartes, tour->joueurs);
 
-        croupier::dire("Donez moi vos cartes pour les remettre dans le paquet");
-
-        std::cout << joueurs->size() << std::endl;
-
+        croupier::dire("Donnez moi vos cartes pour les remettre dans le paquet");
         // Finde la boucle, on détermine qui n'a plus d'argent et sort du jeu
         sortirLesRuines(joueurs);
         decalerJoueurs(joueurs);

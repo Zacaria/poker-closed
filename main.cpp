@@ -15,9 +15,6 @@ int main()
     std::string nomJoueur = croupier::demanderNomJoueur();
     Joueurs joueurs = initJoueurs(nomJoueur);
 
-    int bouton = joueurs[0]->id; // on donne le bouton au premier joueur // pas besoin parce que c'est ordonné, on a juste besoin du numéro du tour
-    croupier::dire("Le bouton est à " + joueurs[0]->nom);
-
     Cartes paquetCartes = initPaquet();
     if (constants::DEBUG_MODE == true)
     {
@@ -32,7 +29,7 @@ int main()
     }
 
     /*************** Jeu ***************/
-    jouer(&paquetCartes,&joueurs);
+    jouer(&paquetCartes, &joueurs);
 
     /*************** Fin, Nettoyage ***************/
 
