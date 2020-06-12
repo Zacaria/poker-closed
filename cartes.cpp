@@ -113,7 +113,6 @@ int getHauteur(int valeur)
 // traite le cas de l'as en terme de valeur
 int getMaxValeur(int hauteurA, int hauteurB)
 {
-    // std::cout << "hauteurA " << hauteurA << " hauteurB" << hauteurB << std::endl;
     if (getHauteur(hauteurA) > getHauteur(hauteurB))
     {
         return getHauteur(hauteurA);
@@ -292,19 +291,19 @@ int isDoublePaire(Cartes *main)
         valeurs[carte->valeur]++;
     }
 
-    bool paire;
-    bool doublePaire;
+    bool paire = false;
+    bool doublePaire = false;
     int hauteurPaire = -1;
     for (auto const &[hauteur, occurences] : valeurs)
     {
         // deuxième paire
-        if (occurences == 2 && paire == true)
+        if (occurences == 2 && paire == true && doublePaire == false)
         {
             doublePaire = true;
             hauteurPaire = getHauteur(hauteur) > getHauteur(hauteurPaire) ? getHauteur(hauteur) : getHauteur(hauteurPaire);
         }
         // première paire
-        if (occurences == 2 && doublePaire == false)
+        if (occurences == 2 && paire == false && doublePaire == false)
         {
             paire = true;
             hauteurPaire = getHauteur(hauteur);

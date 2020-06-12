@@ -72,7 +72,7 @@ void clearJoueurs(Joueurs *joueurs)
 
 void Joueur::salutations()
 {
-    std::cout << "Hey ! moi c'est " << nom << ", mon id : " << id << std::endl;
+    std::cout << "Hey ! moi c'est " << nom << ", mon id : " << id << " et je suis " << comportement << std::endl;
 }
 
 void Joueur::montrerMain()
@@ -94,12 +94,13 @@ bool Joueur::miser(int nbJetons)
         return false;
     }
     jetons -= nbJetons;
-    std::cout << nom << " : Je mise " << nbJetons << " jetons" << std::endl;
+    std::cout << " Je mise " << nbJetons << " jetons" << std::endl;
     return true;
 }
 
 bool Joueur::parlerFermer()
 {
+    std::cout << nom << " : ";
     if (comportement == "basique")
     {
         return basique.parlerFermer();
@@ -112,129 +113,59 @@ bool Joueur::parlerFermer()
     {
         return humain.parlerFermer();
     }
-    // if (isIA == true)
-    // {
-    //     return comportement.parlerFermer();
-    // }
-    // std::cout << "Voulez-vous ouvrir (Yes/No)" << std::endl;
-
-    // std::string reponse;
-
-    // while (reponse != "Yes" && reponse != "No")
-    // {
-    //     std::getline(std::cin, reponse);
-    //     if (reponse != "Yes" && reponse != "No")
-    //     {
-    //         croupier::dire("Les réponses possibles sont Yes ou No :)");
-    //         croupier::dire("N'oubliez pas que vous pouvez quitter à tout moment en appuyant sur Ctrl+C");
-    //     }
-    // }
-    // return reponse == "Yes";
+    return false;
 }
 
 action Joueur::parlerOuvert(const int miseIndiv)
 {
-    if (isIA == true)
+    std::cout << nom << " : ";
+    if (comportement == "basique")
     {
-        return action::suivre; // action par défaut à changer quand on mettra de l'intelligence
+        return basique.parlerOuvert(jetons, miseIndiv);
     }
-    std::string reponse;
-
-    while (reponse != "suivre" && reponse != "coucher" && reponse != "relancer" && reponse != "tapis")
+    if (comportement == "prudent")
     {
-        croupier::dire("Que voulez-vous faire ? (suivre/coucher/relancer/tapis)");
-        std::getline(std::cin, reponse);
-        if (reponse != "suivre" && reponse != "coucher" && reponse != "relancer" && reponse != "tapis")
-        {
-            croupier::dire("Les réponses possibles sont suivre, coucher, relancer ou tapis) :)");
-            croupier::dire("N'oubliez pas que vous pouvez quitter à tout moment en appuyant sur Ctrl+C");
-        }
+        return prudent.parlerOuvert(jetons, miseIndiv);
     }
-
-    if (miseIndiv > jetons && (reponse == "suivre" || reponse == "relancer"))
+    if (comportement == "humain")
     {
-        std::cout << nom << " : je n'ai plus assez de jetons (^^)', je fais tapis" << std::endl;
-        return action::tapis;
+        return humain.parlerOuvert(jetons, miseIndiv);
     }
-
-    else if (reponse == "suivre")
-    {
-        std::cout << nom << " : Je suis !" << std::endl;
-        return action::suivre;
-    }
-    else if (reponse == "relancer")
-    {
-        std::cout << nom << " : Je relance !" << std::endl;
-        return action::relancer;
-    }
-    else if (reponse == "tapis")
-    {
-        std::cout << nom << " : Tapis !" << std::endl;
-        return action::tapis;
-    }
-    else if (reponse == "coucher")
-    {
-        std::cout << nom << " : Je me couche" << std::endl;
-        return action::coucher;
-    }
-    else
-    {
-        std::cout << "ERREUR, action non reconnue, je me couche" << std::endl;
-        return action::coucher;
-    }
+    return action::suivre;
 }
 
 int Joueur::demanderEchange()
 {
-    if (isIA == true)
+    std::cout << nom << " : ";
+    if (comportement == "basique")
     {
-        return 2;
+        return basique.demanderEchange();
     }
-    int nbrEchange = -1;
-    croupier::dire("Vous pouvez demander entre 0 et 3 cartes");
-    while (nbrEchange < 0 || nbrEchange > 3)
+    if (comportement == "prudent")
     {
-        std::cin >> nbrEchange;
-        std::cin.clear();
-        std::cin.ignore(10000, '\n');
-        if (nbrEchange < 0 || nbrEchange > 3)
-        {
-            croupier::dire("Vous pouvez demander entre 0 et 3 cartes");
-            croupier::dire("N'oubliez pas que vous pouvez quitter à tout moment en appuyant sur Ctrl+C");
-        }
+        return prudent.demanderEchange();
     }
-
-    if (nbrEchange == 0)
+    if (comportement == "humain")
     {
-        std::cout << nom << " : servi" << std::endl;
+        return humain.demanderEchange();
     }
-    else
-    {
-        std::cout << nom << " : " << nbrEchange << " cartes" << std::endl;
-    }
-    return nbrEchange;
+    return 0;
 }
 
 int Joueur::demanderMise(const int miseMin)
 {
-    if (isIA == true)
+    std::cout << nom << " : ";
+    if (comportement == "basique")
     {
-        return 2;
+        return basique.demanderMise(jetons, miseMin);
     }
-
-    int mise = 0;
-    while (mise > jetons || mise < miseMin)
+    if (comportement == "prudent")
     {
-        croupier::dire("Vous misez combien ? Pour rappel, vous avez " + std::to_string(jetons) + " jetons");
-        std::cin >> mise;
-        if (jetons < mise)
-        {
-            croupier::dire("Vous ne pouvez pas miser plus de " + std::to_string(jetons) + " jetons");
-        }
-        if (mise < miseMin)
-        {
-            croupier::dire("La mise minimum est de " + std::to_string(miseMin));
-        }
+        return prudent.demanderMise(jetons, miseMin);
     }
-    return mise;
+    if (comportement == "humain")
+    {
+        return humain.demanderMise(jetons, miseMin);
+    }
+    return 1;
 }

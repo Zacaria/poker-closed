@@ -10,7 +10,7 @@ namespace croupier
         if (constants::DEBUG_MODE == false) {
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
-        std::cout << texte << std::endl;
+        std::cout << "Croupy : " << texte << std::endl;
     }
 
     std::string demanderNomJoueur()

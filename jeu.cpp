@@ -1,11 +1,10 @@
+#include <algorithm>
 #include "cartes.hpp"
 #include "joueur.hpp"
 #include "croupier.hpp"
 #include "action.hpp"
 #include "jeu.hpp"
 #include "constants.hpp"
-
-int POT_DEPART = 2; // entre 1 et 3 généralement
 
 Carte *tirerCarte(Cartes *cartes)
 {
@@ -34,9 +33,10 @@ int potDepart(Joueurs joueurs)
     int mises = 0;
     for (auto joueur : joueurs)
     {
+        std::cout << joueur->nom << " : ";
         // possiblité de tapis ?
-        joueur->miser(POT_DEPART);
-        mises += POT_DEPART;
+        joueur->miser(constants::POT_DEPART);
+        mises += constants::POT_DEPART;
     }
 
     return mises;
@@ -67,25 +67,6 @@ void coucherJoueur(Joueurs *joueurs, int idToExclude)
     joueurs->shrink_to_fit();
 }
 
-// int demanderMise(Joueur *joueur, const int miseMin)
-// {
-//     int mise = 0;
-//     while (mise > joueur->jetons || mise < miseMin)
-//     {
-//         croupier::dire("Vous misez combien ? Pour rappel, vous avez " + std::to_string(joueur->jetons) + " jetons");
-//         std::cin >> mise;
-//         if (joueur->jetons < mise)
-//         {
-//             croupier::dire("Vous ne pouvez pas miser plus de " + std::to_string(joueur->jetons) + " jetons");
-//         }
-//         if (mise < miseMin)
-//         {
-//             croupier::dire("La mise minimum est de " + std::to_string(miseMin));
-//         }
-//     }
-//     return mise;
-// }
-
 void echanges(Cartes *cartes, Joueurs *joueurs)
 {
     croupier::dire("C'est le moment d'échanger des cartes");
@@ -98,10 +79,15 @@ void echanges(Cartes *cartes, Joueurs *joueurs)
         int nbCartesDonnees = joueur->demanderEchange();
 
         std::vector<Carte *> cartesDonnees;
+        std::cout << "Je donne ces cartes : ";
         for (int i = 0; i < nbCartesDonnees; i++)
         {
-            cartesDonnees.push_back(tirerCarte(&joueur->main));
+            Carte *carteDonnee = tirerCarte(&joueur->main);
+            cartesDonnees.push_back(carteDonnee);
+            carteDonnee->afficher();
         }
+        std::cout << std::endl;
+
         // On sépare bien les deux boucles car on ne veut pas risquer de rendre une carte donnée au joueur
         for (int i = 0; i < nbCartesDonnees; i++)
         {
@@ -129,7 +115,7 @@ void encheres(TourJeu *tour)
             if (tour->ouvert == true)
             {
                 int mise = 1;
-                mise = joueur->demanderMise(constants::JETONS_DEPART);
+                mise = joueur->demanderMise(constants::POT_DEPART);
                 bool reussi = joueur->miser(mise);
                 if (reussi == false)
                 { // on fait tapis
@@ -197,8 +183,9 @@ void ramasserCartes(Cartes *cartes, Joueurs joueurs)
         Cartes mainVide;
         joueur->main = mainVide;
     }
-    afficher(cartes);
-    std::cout << "paquet taille" << cartes->size() << std::endl;
+    if (constants::DEBUG_MODE == true) {
+        afficher(cartes);
+    }
 }
 
 // Sortir les joueurs ruinés
@@ -265,9 +252,9 @@ void jouer(Cartes *cartes, Joueurs *joueurs)
     croupier::dire("Le jeu commence");
 
     // Début d'un boucle qui sort quand il ne reste plus qu'un joueur qui joue
-    for (size_t i = 0; i < 5; i++) // mettre la condition de sortie
+    for (size_t i = 0; i < 100 || joueurs->size() < 2; i++) // 100 tours max ou il ne reste plus que 1 joueur
     {
-        croupier::dire("Début du tour " + std::to_string(i));
+        croupier::dire("Début du tour " + std::to_string(i + 1));
 
         TourJeu *tour = new TourJeu();
         tour->joueurs = getJoueursTour(joueurs);
@@ -310,7 +297,7 @@ void jouer(Cartes *cartes, Joueurs *joueurs)
         // règle avec tapis ?
         vainqueur->jetons += tour->mises;
 
-        croupier::dire(vainqueur->nom + " remporte la mise !");
+        croupier::dire(vainqueur->nom + " remporte la mise ! Il a maintenant " + std::to_string(vainqueur->jetons));
 
         // Récupérer les cartes dans le paquet
         ramasserCartes(cartes, tour->joueurs);

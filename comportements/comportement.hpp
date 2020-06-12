@@ -7,24 +7,23 @@ namespace comportements
     struct BasiqueIA
     {
         bool parlerFermer();
-        action parlerOuvert();
+        action parlerOuvert(int jetons, int miseIndiv);
         int demanderEchange();
-        int demanderMise();
-            
+        int demanderMise(int jetons, const int miseMin);
     };
     struct PrudentIA
     {
         bool parlerFermer();
-        action parlerOuvert();
+        action parlerOuvert(int jetons, int miseIndiv);
         int demanderEchange();
-        int demanderMise();
+        int demanderMise(int jetons, const int miseMin);
     };
     struct Humain
     {
-        bool parlerFermer();;
-        action parlerOuvert();;
-        int demanderEchange();;
-        int demanderMise();;
+        bool parlerFermer();
+        action parlerOuvert(int jetons, int miseIndiv);
+        int demanderEchange();
+        int demanderMise(int jetons, const int miseMin);
     };
 } // namespace comportements
 
